@@ -2,6 +2,12 @@ require("dotenv").config();
 
 // Import the Twitter NPM package.
 var Twitter = require("twitter");
+var client = new Twitter({
+    consumer_key: process.env.TWITTER_CONSUMER_KEY,
+    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+    access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
+    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+  });
 // Import the node-spotify-api NPM package.
 var Spotify = require("node-spotify-api");
 // Import the API keys
@@ -68,6 +74,6 @@ function getTweets() {
 	});
 };
 getTweets();
-// var client = new Twitter(keys.twitter);
-// console.log(client)
+var client = new Twitter(keys.twitter);
+
 
