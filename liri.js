@@ -50,7 +50,22 @@ getSpotify();
 
 // Twitter
 function getTweets() {
-	console.log("\nGet Tweets?")
+	var params = {screen_name: 'encelphiro', count: 20, exclude_replies:true, trim_user:true};
+		client.get('statuses/user_timeline', params, function(error, tweets, response) {
+				if (!error) {
+					//console.log(tweets);
+					tweetsArray = tweets;
+
+					for(i=0; i<tweetsArray.length; i++){
+						console.log("Created at: " + tweetsArray[i].created_at);
+						console.log("Text: " + tweetsArray[i].text);
+						console.log('--------------------------------------');
+					}
+				}
+				else{
+					console.log(error);
+				}
+	});
 };
 getTweets();
 // var client = new Twitter(keys.twitter);
