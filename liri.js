@@ -20,17 +20,18 @@ var fs = require("fs");
 var spotifyKey = new Spotify(keys.spotify);
 
 var userCommand = process.argv[2];
-
-// Spotify
 var searchTerm = process.argv[3];
+
+
+//----------- Spotify------------------
 
 function getSpotify(){
 	
 	console.log("Search: ", searchTerm);
   //searches for "The Sign by Ace of Base" if no search term was entered
-	if (searchTerm ===  undefined || searchTerm ==="") {
-	    searchTerm = 'The Sign Ace of Base'
-	}; 
+	// if (searchTerm ===  undefined || searchTerm ==="") {
+	//     searchTerm = 'The Sign Ace of Base'
+	// }; 
 
 	spotifyKey.search({ type: 'track', query: searchTerm }, function (err, data) {
 	if (err) {
@@ -41,20 +42,20 @@ function getSpotify(){
 	for (var i = 0; i<data.tracks.items[0].artists.length; i++){
     	console.log("Artist: " + data.tracks.items[0].artists[i].name);
  	}
-	console.log("Song Name: " + data.tracks.items[0].name);
- 	console.log("Preview: " + data.tracks.items[0].preview_url);
-   	console.log("Album Name: " + (data.tracks.items[0].album.name));
+		console.log("Song Name: " + data.tracks.items[0].name);
+		console.log("Preview: " + data.tracks.items[0].preview_url);
+		console.log("Album Name: " + (data.tracks.items[0].album.name));
   }
   
   });
   
 };
-getSpotify();
-// End of spotify
+
+// ---------End of spotify--------------
 
 
 
-// Twitter
+// -------------Twitter-----------------
 function getTweets() {
 	var params = {screen_name: 'encelphiro', count: 20, exclude_replies:true, trim_user:true};
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
@@ -73,7 +74,96 @@ function getTweets() {
 				}
 	});
 };
-getTweets();
-var client = new Twitter(keys.twitter);
+// --------End twitter area-------------
 
+// -------Begin movie area------------
 
+function getMovie() {
+// Store all of the arguments in an array
+var nodeArgs = process.argv;
+// Create an empty variable for holding the movie name
+var movieName = "";
+// Loop through all the words in the node argument
+for (var i = 3; i < nodeArgs.length; i++) {
+  if (i > 3 && i < nodeArgs.length) {
+    movieName = movieName + "+" + nodeArgs[i];
+  }
+  else {
+    movieName += nodeArgs[i];
+  }
+}
+if (userCommand === 'movie-this' && nodeArgs[3] === undefined) {
+	movieName = "Mr. Nobody"
+}
+// Then run a request to the OMDB API with the movie specified
+var queryUrl = "http://www.omdbapi.com/?apikey=trilogy&t=" + movieName + "&tomatoes=true&y=&plot=short&r=json";
+console.log(queryUrl);
+request(queryUrl, function(error, response, body) {
+	// console.log(error, response)
+  // If the request is successful
+  if (!error && response.statusCode === 200) {
+// put json.parse into a var, make code more readable
+var movieData = JSON.parse(body)
+
+    console.log("Movie Name: " + movieData.Title);
+    console.log("Released: " + movieData.Year);
+	console.log("IMDB Rating: " + movieData.imdbRating);
+	console.log("Tomato Meter: " + movieData.tomatoRating);
+	console.log("Origin: " + movieData.Country);
+    console.log("Language: " + movieData.Language);
+    console.log("Plot: " + movieData.Plot);
+    console.log("Actors: " + movieData.Actors);
+  }
+});
+};
+// getMovie();
+
+// Begin selection area
+function selectCommand() {
+
+  fs.readFile("random.txt", "utf8", function(error, data) {
+  
+	// Then split it by commas (to make it more readable)
+	var output = data.split(",");
+  
+	//set variables accordingly
+	userCommand = output[0];
+	searchTerm = output[1];
+	  if (userCommand === 'spotify-this-song'){
+		getSpotify();
+	  }
+  });
+  
+  }
+  
+  //If no movie, return Mr Nobody
+//   if (userCommand === 'movie-this' && process.argv[3] === undefined){
+// 	movieName = 'Mr. Nobody';
+//   }
+
+  // //If there is no song, return the sign
+  if (userCommand === 'spotify-this-song' && process.argv[3] === undefined){
+	searchTerm = 'The Sign Ace of Base';
+  }
+  
+  
+  if (userCommand === 'my-tweet') {
+	  getTweets();
+  }
+  
+  
+  
+  if (userCommand === 'spotify-this-song') {
+	  getSpotify();
+  }
+  
+  
+  
+  if (userCommand === 'movie-this') {
+	  getMovie();
+  }
+  
+  
+  if (userCommand === 'do-what-it-says') { 
+	  selectCommand();
+  }
