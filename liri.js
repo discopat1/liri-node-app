@@ -128,9 +128,9 @@ function selectCommand() {
   }
   
 
-  // //If there is no song, return the sign
+  // //If there is no song, return wake the dead
   if (userCommand === 'spotify-this-song' && process.argv[3] === undefined){
-	searchTerm = 'The Sign Ace of Base';
+	searchTerm = 'wake the dead';
   }
   
   
